@@ -2,7 +2,7 @@
 
 class IndexController extends Controller
 {
-
+	public $layout='main';
 
 	private $api = 'http://api.snappea.com/v1/video/';
 
@@ -35,14 +35,42 @@ class IndexController extends Controller
 	public function actionIndex()
 	{
 
-
+		//分类
 		$categoresString = file_get_contents($this->api . 'categories?hl=id_GZ');
 		$categoresArray = json_decode($categoresString,true);
-		var_dump($categoresArray);die;
+		//专题数据
+		$specialsString = file_get_contents($this->api . 'specials/rich?region=IN');
+		$specialsArray = json_decode($specialsString, true);
+
+		//echo $categoresString;die;
 
 
 		// renders the view file 'protected/views/index/index.php'
 		// using the default layout 'protected/views/layouts/main.php'
-		$this->render('index');
+		$this->render('index' , array('categories' => $categoresArray , 'specials' => $specialsArray));
 	} 
+
+	//格式化时间
+	public function formatDate($date)
+	{
+		$unit = "day";
+		if($date)
+		{
+			$currentDate = (int)(time() . '000');
+			$num = ( $currentDate - $date ) / 1000 / 60 / 60 / 24; 
+			//echo $currentDate .'-'. $date;die;
+			if($num > 30)
+			{
+				$unit = "month";
+				$num = $num / 30; 
+				if($num > 12)
+				{
+					$unit = "year";
+					$num = $num / 12;
+				}
+			}
+		}
+
+		return floor($num) . ' ' . $unit . ' ago';
+	}
 }
