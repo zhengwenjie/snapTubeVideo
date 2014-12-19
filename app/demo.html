@@ -1,8 +1,14 @@
+<!doctype html>
 <html>
-<head></head>
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+</head>
 <body>
 	<canvas id="canvas"></canvas>
-	<video id="video"></video>
+	<br>
+	<video id="video" width="320" height="280"></video>
+	<button id="snap">Snap Photo</button>
+	<div id="demo"></div>
 <script>
 // Put event listeners into place
 window.addEventListener("DOMContentLoaded", function() {
@@ -14,6 +20,13 @@ videoObj = { "video": true },
 errBack = function(error) {
 console.log("Video capture error: ", error.code); 
 };
+
+canvas.width = 320;
+canvas.height = 280;
+document.getElementById("snap")
+.addEventListener("click", function() {
+context.drawImage(video, 0, 0, 640, 480);
+});
 // Put video listeners into place
 if(navigator.getUserMedia) { // Standard
 navigator.getUserMedia(videoObj, function(stream) {
@@ -33,6 +46,20 @@ video.play();
 }, errBack);
 }
 }, false);
+var x=document.getElementById("demo");
+function getLocation()
+  {
+  if (navigator.geolocation)
+    {
+    navigator.geolocation.getCurrentPosition(showPosition);
+    }
+  else{x.innerHTML="Geolocation is not supported by this browser.";}
+  }
+function showPosition(position)
+  {
+  x.innerHTML="Latitude: " + position.coords.latitude +
+  "<br />Longitude: " + position.coords.longitude;
+  }
 </script>
 </body>
 </html>
